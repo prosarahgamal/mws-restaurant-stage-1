@@ -26,7 +26,8 @@ ul, li {
 
 a {
 	color: orange;
-	text-decoration: none;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 a:hover, a:focus {
@@ -62,6 +63,24 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-transform: uppercase;
   position: absolute;
   width: 100%;
+}
+
+.skip{
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: #252831;
+  color: #fff;
+}
+
+.skip:focus{
+  top: 0;
+}
+
+.hide{
+  position: absolute;
+  top: -40px;
+  left: 0;
 }
 
 /* ====================== Navigation ====================== */
@@ -177,6 +196,10 @@ nav h1 a {
   box-shadow: 10px 10px 5px 0px rgba(187, 180, 180, 0.75);
 }
 
+#restaurants-list li:hover {
+  box-shadow: none;
+}
+
 #restaurants-list .restaurant-img {
   background-color: #ccc;
   display: block;
@@ -187,7 +210,7 @@ nav h1 a {
   object-fit: cover;
 }
 
-#restaurants-list li h1 {
+#restaurants-list li h3 {
   color: #f18200;
   font-family: Arial,sans-serif;
   font-size: 1.2em;
@@ -356,9 +379,14 @@ nav h1 a {
   margin: 20px;
 }
 
+#restaurant-hours{
+  width: 100%;
+  overflow-x: auto;
+}
+
 #restaurant-hours td {
   color: #666;
-  font-size: 1.5em;
+  font-size: 1em;
 }
 
 #restaurant-hours tr td:first-of-type{
@@ -457,7 +485,7 @@ nav h1 a {
 
   #reviews-list li {
     padding: 0px 0px 20px;
-    width: 85%;
+    width: 100%;
   }
 
   #reviews-list li p {
@@ -479,4 +507,17 @@ nav h1 a {
   #restaurant-hours td {
     font-size: 1em;
   }
+
+  #restaurant-cuisine{
+    font-size: 1.5em;
+  }
+
+  #restaurant-name{
+    font-size: 2em;
+  }
+
+  #breadcrumb {
+    font-size: 0.7em;
+  }
+
 }

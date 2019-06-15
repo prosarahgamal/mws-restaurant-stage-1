@@ -12,6 +12,7 @@
 </head>
 
 <body>
+  <a href="#skipcontent" class="skip">Skip the map</a>
   <header>
     <nav>
       <h1><a href="/">Restaurant Reviews</a></h1>
@@ -19,18 +20,24 @@
   </header>
 
   <main id="maincontent">
+    <h2 class="hide"><a href="#map-container">restaurents map</a></h2>
     <section id="map-container">
-      <div id="map"></div>
+      <div id="map" tabindex = -1></div>
     </section>
-    <section>
-      <div class="filter-options">
+    <section id="skipcontent">
+      <h2 class="hide"><a href="#filter">filter options</a></h2>
+      <label class="hide">Filter options</label>
+      <div class="filter-options" id="filter">
         <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
+        <label class="hide" for="neighborhoods">Neighborhoods</label>
         <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-          <option value="all">All Cuisines</option>
+            <option value="all">All Cuisines</option>
         </select>
+        <label class="hide" for="cuisines">cuisines</label>
       </div>
+      <h2 class="hide"><a href="#restaurants-list">restaurents list</a></h2>
       <ul id="restaurants-list"></ul>
     </section>
   </main>
