@@ -25,6 +25,10 @@ self.addEventListener('install', function(event) {
   );
 });
 
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.open('restaurant-reviews-static-v1').then(function(cache) {
