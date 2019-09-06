@@ -1,7 +1,9 @@
-self.addEventListener('install', function(event) {
+var staticCacheName = 'restaurant-reviews-static-v3';
+
+self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open('restaurant-reviews-static-v1').then(function(cache) {
-      return cache.addAll([
+    caches.open(staticCacheName)
+      .then(cache => cache.addAll([
         '/',
         './index.html',
         './restaurant.html',
@@ -19,9 +21,8 @@ self.addEventListener('install', function(event) {
         './img/7.jpg',
         './img/8.jpg',
         './img/9.jpg',
-        './img/10.jpg'
-      ]);
-    })
+        './img/10.jpg',
+      ]))
   );
 });
 
@@ -29,18 +30,14 @@ self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.open('restaurant-reviews-static-v1').then(function(cache) {
-      return cache.match(event.request).then(function(res) {
-        if (res) {
-          return res;
-        }
-        return fetch(event.request).then(function(res) {
-          cache.put(event.request, res.clone());
-          return res;
-        });
+    caches.match(event.request, { ignoreSearch: true }).then(response => {
+      if(response) return response;
+      return fetch(event.request).then(function(res) {
+        cache.put(event.request, res.clone());
+        return res;
       });
-    })
+    }).catch(err => console.log(err))
   );
 });
