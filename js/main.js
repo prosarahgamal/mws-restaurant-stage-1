@@ -4,6 +4,11 @@ let restaurants,
 var newMap
 var markers = []
 
+// add lazy load
+var lazyLoadInstance = new LazyLoad({
+  elements_selector: ".lazy"
+});
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -159,10 +164,10 @@ createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
+  image.classList.add('restaurant-img');
+  image.classList.add('lazy');
 
   imageUrl = DBHelper.imageUrlForRestaurant(restaurant);
-
   width = window.outerWidth;
   if (width <= 320) {
     imageUrl = imageUrl.replace('large', 'small');
@@ -171,7 +176,6 @@ createRestaurantHTML = (restaurant) => {
   }
   image.src = imageUrl;
   image.alt = `${restaurant.name} restaurant image`;
-  
   li.append(image);
 
   const name = document.createElement('h3');
@@ -189,6 +193,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.setAttribute('aria-label', `view details of ${restaurant.name} restaurant`);
   li.append(more)
 
   return li
