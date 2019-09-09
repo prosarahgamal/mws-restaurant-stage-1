@@ -4,7 +4,8 @@
   "description": "---\r #### _Three Stage Course Material Project - Restaurant Reviews_",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d lib"
   },
   "repository": {
     "type": "git",
@@ -17,10 +18,14 @@
   },
   "homepage": "https://github.com/prosarahgamal/mws-restaurant-stage-1#readme",
   "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "eslint": "^6.3.0",
     "gulp": "^4.0.2",
-    "gulp-image-resize": "^0.13.0",
+    "gulp-image-resize": "^0.13.1",
     "gulp-imagemin": "^6.0.0",
     "gulp-rename": "^1.4.0",
     "imagemin-mozjpeg": "^8.0.0"
-  }
+  },
+  "dependencies": {}
 }
