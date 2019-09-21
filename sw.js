@@ -26,7 +26,8 @@ self.addEventListener('install', function (event) {
         'https://cdn.rawgit.com/mozilla/localForage/master/dist/localforage.js',
         '/js/idb.js',
         'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
-        'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'
+        'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
+        'http://localhost:8000/manifest.json'
       ]))
       .then(() => self.skipWaiting())
   );
