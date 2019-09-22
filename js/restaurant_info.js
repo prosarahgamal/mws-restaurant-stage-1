@@ -6,18 +6,53 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
+  enableRatingStars();
+  enableReviewSubmit();
 });
 
 /**
  * for the rating stars
  */
-const starEls = document.querySelectorAll('.star.rating');
-  starEls.forEach(star => {
-      star.addEventListener('click', function (e) {
-          let starEl = e.currentTarget;
-          starEl.parentNode.setAttribute('data-stars', starEl.dataset.rating);
-      });
+const enableRatingStars = () => {
+  const starEls = document.querySelectorAll('.star.rating');
+    starEls.forEach(star => {
+        star.addEventListener('click', function (e) {
+            let starEl = e.currentTarget;
+            starEl.parentNode.setAttribute('data-stars', starEl.dataset.rating);
+        });
+    });
+};
+
+const enableReviewSubmit = () => {
+  const submitBtn = document.querySelector('.review-form button');
+  submitBtn.addEventListener('click', (e)=>{
+    const review = getReviewFromForm();
+    if(review){
+      const container = document.querySelector('#reviews-list');
+      if (container.childNodes.length === 0) {
+        document.querySelector('#reviews-container > h2').style.display = 'none';
+        document.querySelector('#reviews-container p').style.display = 'none';
+        const title = document.createElement('h2');
+        title.innerHTML = 'Reviews';
+        container.appendChild(title);
+      }
+      container.appendChild(createReviewHTML(review));
+    }
   });
+};
+
+const getReviewFromForm = () => {
+  const review = {};
+  review.name = document.querySelector('input[name="reviewer-name"]').value;
+  review.comments = document.querySelector('textarea[name="review"]').value;
+  review.rating = document.querySelector('.stars').getAttribute('data-stars');
+  review.date = new Date().getUTCMilliseconds();
+  if(review.name === '' || review.comments === ''){
+    document.querySelector('.form-errors').innerHTML('Missing data');
+  }
+  console.log(review);
+  return review;
+}
 
 /**
  * Initialize leaflet map
