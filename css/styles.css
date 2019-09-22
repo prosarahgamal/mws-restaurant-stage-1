@@ -416,6 +416,10 @@ nav h1 a {
   color: #fff;
 }
 
+.form-errors{
+  color: #da1a1a;
+}
+
 /* rating stars styles */
 
 .stars {
