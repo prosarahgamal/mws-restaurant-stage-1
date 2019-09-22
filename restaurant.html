@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +12,9 @@
   <!-- Main CSS file -->
   <link rel="stylesheet" href="css/styles.css" type="text/css">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+    integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+    crossorigin="" />
   <title>Restaurant Info</title>
 </head>
 
@@ -24,7 +27,7 @@
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" role="navigation" aria-label="Breadcrumb" >
+    <ul id="breadcrumb" role="navigation" aria-label="Breadcrumb">
       <li><a href="/">Home</a></li>
     </ul>
     <!-- End breadcrumb -->
@@ -36,7 +39,7 @@
   <main id="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
-      <div id="map" tabindex = -1 aria-label="location" role="application"></div>
+      <div id="map" tabindex=-1 aria-label="location" role="application"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
@@ -50,6 +53,41 @@
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
+      <div>
+        <form class="review-form">
+          <h2>Add Review</h2>
+          <input type="text" name="" id="" aria-label="Enter Your Name" placeholder="Enter Your Name" aria-placeholder="Enter Your Name">
+          <div class="stars" data-stars="1" aria-label="Specify Your Rate">
+            <svg height="25" width="23" class="star rating" data-rating="1" arialabelledby="title" id="svg"
+              role="presentation">
+              <title id=”title” lang=”en”>vote 1 star for the restaurant</title>
+              <polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+            </svg>
+            <svg height="25" width="23" class="star rating" data-rating="2" arialabelledby="title" id="svg"
+              role="presentation">
+              <title id=”title” lang=”en”>vote 2 stars for the restaurant</title>
+              <polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+            </svg>
+            <svg height="25" width="23" class="star rating" data-rating="3" arialabelledby="title" id="svg"
+              role="presentation">
+              <title id=”title” lang=”en”>vote 3 stars for the restaurant</title>
+              <polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+            </svg>
+            <svg height="25" width="23" class="star rating" data-rating="4" arialabelledby="title" id="svg"
+              role="presentation">
+              <title id=”title” lang=”en”>vote 4 stars for the restaurant</title>
+              <polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+            </svg>
+            <svg height="25" width="23" class="star rating" data-rating="5" arialabelledby="title" id="svg"
+              role="presentation">
+              <title id=”title” lang=”en”>vote 5 stars for the restaurant</title>
+              <polygon points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+            </svg>
+          </div>
+          <textarea name="" id="" cols="30" rows="10" aria-label="Enter Your Review" placeholder="Enter Your Review..." aria-placeholder="Enter Your Review"></textarea>
+          <button type="button" aria-label="Submit Your Review" role="button" aria-pressed="false">Add Review</button>
+        </form>
+      </div>
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
@@ -61,7 +99,9 @@
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
   <!-- End footer -->
-  <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+    integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+    crossorigin=""></script>
   <!-- Beginning scripts -->
   <!-- Database helpers -->
   <script src="js/idb.js"></script>

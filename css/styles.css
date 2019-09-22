@@ -90,7 +90,6 @@ nav {
   background-color: #252831;
   text-align:center;
   padding: 30px;
-  /* font-size: 2em; */
 }
 
 nav h1 {
@@ -393,6 +392,73 @@ nav h1 a {
   color: #000;
 }
 
+.review-form{
+  display: flex;
+  flex-direction: column;
+}
+
+.review-form *{
+  margin-bottom: 20px;
+}
+
+.review-form input, .review-form textarea{
+  padding: 10px;
+}
+
+.review-form button{
+  padding: 10px;
+  background-color: #00000000;
+  border: 1px #f58500 solid;
+}
+
+.review-form button::hover{
+  background-color: #f58500;
+  color: #fff;
+}
+
+/* rating stars styles */
+
+.stars {
+  cursor: pointer;
+  display: flex;
+  align-self: center;
+}
+
+.stars:hover .star polygon {
+  fill: #ffd055 !important;
+}
+
+.stars .star polygon {
+  fill: #d8d8d8;
+}
+
+.stars .star:hover~.star polygon {
+  fill: #d8d8d8 !important;
+}
+
+.stars[data-stars] .star polygon {
+  fill: #ffd055;
+}
+
+.stars[data-stars="1"] .star:nth-child(1)~.star polygon {
+  fill: #d8d8d8;
+}
+
+.stars[data-stars="2"] .star:nth-child(2)~.star polygon {
+  fill: #d8d8d8;
+}
+
+.stars[data-stars="3"] .star:nth-child(3)~.star polygon {
+  fill: #d8d8d8;
+}
+
+.stars[data-stars="4"] .star:nth-child(4)~.star polygon {
+  fill: #d8d8d8;
+}
+
+.stars[data-stars="5"] .star:nth-child(5)~.star polygon {
+  fill: #d8d8d8;
+}
 
 /* restaurant info media queries */
 

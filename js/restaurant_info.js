@@ -9,6 +9,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 /**
+ * for the rating stars
+ */
+const starEls = document.querySelectorAll('.star.rating');
+  starEls.forEach(star => {
+      star.addEventListener('click', function (e) {
+          let starEl = e.currentTarget;
+          starEl.parentNode.setAttribute('data-stars', starEl.dataset.rating);
+      });
+  });
+
+/**
  * Initialize leaflet map
  */
 const initMap = () => {
@@ -96,6 +107,8 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   // fill reviews
   fillReviewsHTML();
 }
+
+
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
