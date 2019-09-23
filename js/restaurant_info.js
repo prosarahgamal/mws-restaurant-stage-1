@@ -1,4 +1,4 @@
-let restaurant;
+let restaurant, reviews;
 var newMap;
 
 /**
@@ -155,8 +155,9 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
+
+  // fetch restaurant reviews
+  fetchReviews();
 }
 
 
@@ -184,7 +185,7 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -256,4 +257,14 @@ const getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+const fetchReviews = (id = self.restaurant.id) => {
+  DBHelper.fetchReviews(id)
+    .then(res => {
+      self.reviews = res;
+      // fill reviews
+      fillReviewsHTML();
+    })
+    .catch(err => err);
 }

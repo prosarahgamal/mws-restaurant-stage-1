@@ -9,7 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}/`;
   }
 
   /**
@@ -17,7 +17,7 @@ class DBHelper {
    */
   static fetchRestaurants() {
     return new Promise((resolve, reject) => {
-      fetch(DBHelper.DATABASE_URL)
+      fetch(DBHelper.DATABASE_URL + 'restaurants')
       .then(res => res.json())
       .then(res => resolve(res))
       .catch(err => reject(err));
@@ -141,5 +141,15 @@ class DBHelper {
       })
       marker.addTo(newMap);
     return marker;
+  }
+
+  // fetch reviews for a restaurant
+  static fetchReviews(id) {
+    return new Promise((resolve, reject) => {
+      fetch(DBHelper.DATABASE_URL + 'reviews/?restaurant_id=' + id)
+      .then(res => res.json())
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+    });
   }
 }
