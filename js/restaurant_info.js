@@ -31,7 +31,7 @@ const enableReviewSubmit = () => {
       const container = document.querySelector('#reviews-list');
       if (container.childNodes.length === 0) {
         document.querySelector('#reviews-container > h2').style.display = 'none';
-        document.querySelector('#reviews-container p').style.display = 'none';
+        document.querySelector('#reviews-container > p').style.display = 'none';
         const title = document.createElement('h2');
         title.innerHTML = 'Reviews';
         container.appendChild(title);
@@ -48,9 +48,10 @@ const getReviewFromForm = () => {
   review.rating = document.querySelector('.stars').getAttribute('data-stars');
   review.date = new Date().getUTCMilliseconds();
   if(review.name === '' || review.comments === ''){
-    document.querySelector('.form-errors').innerHTML('Missing data');
+    document.querySelector('.form-errors').innerHTML = 'Missing data';
+    return;
   }
-  console.log(review);
+  document.querySelector('.form-errors').innerHTML = '';
   return review;
 }
 
