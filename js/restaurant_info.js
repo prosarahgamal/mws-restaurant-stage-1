@@ -37,6 +37,7 @@ const enableReviewSubmit = () => {
         container.appendChild(title);
       }
       container.appendChild(createReviewHTML(review));
+      
     }
   });
 };
@@ -46,13 +47,27 @@ const getReviewFromForm = () => {
   review.name = document.querySelector('input[name="reviewer-name"]').value;
   review.comments = document.querySelector('textarea[name="review"]').value;
   review.rating = document.querySelector('.stars').getAttribute('data-stars');
-  review.date = new Date().getUTCMilliseconds();
+  review.date = formatDate();
   if(review.name === '' || review.comments === ''){
     document.querySelector('.form-errors').innerHTML = 'Missing data';
     return;
   }
   document.querySelector('.form-errors').innerHTML = '';
   return review;
+}
+
+const formatDate = (seconds = 0) => {
+  // format date works for two cases if the date is coming from db then use the passed date 
+  // or 
+  // added from the review form then use the current date
+  let date;
+  if(seconds != 0){
+    date = new Date(seconds);
+  }else{
+    date = new Date();
+  }
+  // Month + 1 because month starts from zero!!!
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 }
 
 /**
@@ -198,8 +213,13 @@ const createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  if(review.date){
+    date.innerHTML = review.date;
+  }else{
+    date.innerHTML = formatDate(review.updatedAt);
+  }
   li.appendChild(date);
+  
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
