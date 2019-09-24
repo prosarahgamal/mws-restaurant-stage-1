@@ -8,6 +8,10 @@ const openDatabase = () => {
     const store = upgradeDb.createObjectStore('restaurants', {
       keyPath: 'id'
     });
+    const reviews = upgradeDb.createObjectStore('reviews', {
+      keyPath: 'id'
+    })
+    reviews.createIndex('restaurant_id', 'restaurant_id', { unique: false });
   });
 };
 
@@ -49,13 +53,18 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  if (requestUrl.pathname.startsWith('/reviews')) {
+    event.respondWith(serveReviews(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then(response => {
       if (response) return response;
       return fetch(event.request).then(function (networkRes) {
         return networkRes;
       })
-      .catch(err => console.log('error ' + err));
+        .catch(err => console.log('error ' + err));
     }).catch(err => console.log(err))
   );
 });
@@ -78,14 +87,14 @@ const servePhoto = (request) => {
 
 const serveRestaurants = (request) => {
   const dbPromise = openDatabase();
-    return dbPromise.then(db => {
-      if (!db) return;
-      const tx = db.transaction('restaurants');
-      const restaurantStore = tx.objectStore('restaurants');
-      return restaurantStore.getAll();
-    })
+  return dbPromise.then(db => {
+    if (!db) return;
+    const tx = db.transaction('restaurants');
+    const restaurantStore = tx.objectStore('restaurants');
+    return restaurantStore.getAll();
+  })
     .then(restaurants => {
-      if(restaurants.length > 0){
+      if (restaurants.length > 0) {
         let response = new Response(JSON.stringify(restaurants), {
           headers: new Headers({
             'Content-type': 'application/json'
@@ -95,27 +104,64 @@ const serveRestaurants = (request) => {
         return response;
       }
       return fetch(request)
-      .then(res => res.json())
-      .then(networkRes => {
-        dbPromise.then(db => {
-          const tx = db.transaction('restaurants', 'readwrite');
-          const restaurantStore = tx.objectStore('restaurants');
-          networkRes.forEach(o => restaurantStore.put(o));
-          return tx.complete;
-        })
-        .then(() => {
-          const blob = new Blob(networkRes, {type : 'application/json'});
-          const init = { "status" : 200 , "statusText" : "SuperSmashingGreat!" };
-          const response = new Response(blob, init);
-          return response;
+        .then(res => res.json())
+        .then(networkRes => {
+          dbPromise.then(db => {
+            const tx = db.transaction('restaurants', 'readwrite');
+            const restaurantStore = tx.objectStore('restaurants');
+            networkRes.forEach(o => restaurantStore.put(o));
+            return tx.complete;
+          })
+            .then(() => {
+              const blob = new Blob(networkRes, { type: 'application/json' });
+              const init = { "status": 200, "statusText": "SuperSmashingGreat!" };
+              const response = new Response(blob, init);
+              return response;
+            })
+            .catch(err => {
+              console.log('error while adding to db ' + err);
+            })
         })
         .catch(err => {
-          console.log('error while adding to db ' + err);
+          console.log('error while fetching data from network ' + err);
         })
-      })
-      .catch(err => {
-        console.log('error while fetching data from network ' + err);
-      })
+    })
+    .catch(err => {
+      console.log('error while fetching data from db ' + err);
+    })
+}
+
+const serveReviews = (request) => {
+  // get id from request
+  const restaurantId = +request.url.replace('http://localhost:1337/reviews/?restaurant_id=', '');
+  const dbPromise = openDatabase();
+  return dbPromise.then(db => {
+    if (!db) return;
+    const tx = db.transaction('reviews');
+    const reviewsStore = tx.objectStore('reviews');
+    return reviewsStore.index('restaurant_id').getAll(restaurantId);
+  })
+    .then(reviews => {
+      // check if there is reviews in db
+      if (reviews.length > 0) {
+        // if yes return them
+        let response = new Response(JSON.stringify(reviews), {
+          headers: new Headers({
+            'Content-type': 'application/json'
+          }),
+          status: 200
+        });
+        return response;
+      }
+      return fetch(request)
+        .then(res => {
+          // add the reviews to db then return them
+          addReviewsToDb(dbPromise, res.clone());
+          return res;
+        })
+        .catch(err => {
+          console.log('error while fetching data from network ' + err);
+        })
     })
     .catch(err => {
       console.log('error while fetching data from db ' + err);
@@ -127,3 +173,17 @@ self.addEventListener('message', function (event) {
     self.skipWaiting();
   }
 });
+
+const addReviewsToDb = (dbPromise, res) => {
+  res.json()
+    .then(networkRes => {
+      dbPromise.then(db => {
+        const tx = db.transaction('reviews', 'readwrite');
+        const reviewsStore = tx.objectStore('reviews');
+        networkRes.forEach(o => reviewsStore.put(o));
+      })
+    })
+    .catch(err => {
+      console.log('error while adding to db ' + err);
+    })
+}
