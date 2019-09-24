@@ -47,6 +47,11 @@ self.addEventListener('fetch', event => {
   }
 
   if (requestUrl.pathname.startsWith('/restaurants')) {
+    const params = new URLSearchParams(requestUrl.search);
+    if(params.get('is_favorite')){
+      event.respondWith(favoriteRestaurant(event.request));
+      return;
+    }
     event.respondWith(serveRestaurants(event.request));
     return;
   }
@@ -218,7 +223,6 @@ const sendDataToServer = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: JSON.stringify(body)
         })
@@ -244,4 +248,10 @@ const sendDataToServer = () => {
   .catch(err => {
     console.log('error while getting reviews from db ' + err);
   })
+}
+
+const favoriteRestaurant = (request) => {
+  return fetch(request)
+  .then(res => res)
+  .catch(err => err)
 }

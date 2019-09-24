@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
   enableRatingStars();
   enableReviewSubmit();
+  enableFavorite();
 });
 
 /**
@@ -15,19 +16,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
  */
 const enableRatingStars = () => {
   const starEls = document.querySelectorAll('.star.rating');
-    starEls.forEach(star => {
-        star.addEventListener('click', function (e) {
-            let starEl = e.currentTarget;
-            starEl.parentNode.setAttribute('data-stars', starEl.dataset.rating);
-        });
+  starEls.forEach(star => {
+    star.addEventListener('click', function (e) {
+      let starEl = e.currentTarget;
+      starEl.parentNode.setAttribute('data-stars', starEl.dataset.rating);
     });
+  });
 };
 
 const enableReviewSubmit = () => {
   const submitBtn = document.querySelector('.review-form button');
-  submitBtn.addEventListener('click', (e)=>{
+  submitBtn.addEventListener('click', (e) => {
     const review = getReviewFromForm();
-    if(review){
+    if (review) {
       const container = document.querySelector('#reviews-list');
       if (container.childNodes.length === 0) {
         document.querySelector('#reviews-container > h2').style.display = 'none';
@@ -48,12 +49,18 @@ const getReviewFromForm = () => {
   review.comments = document.querySelector('textarea[name="review"]').value;
   review.rating = document.querySelector('.stars').getAttribute('data-stars');
   review.date = formatDate();
-  if(review.name === '' || review.comments === ''){
+  if (review.name === '' || review.comments === '') {
     document.querySelector('.form-errors').innerHTML = 'Missing data';
     return;
   }
   document.querySelector('.form-errors').innerHTML = '';
+  clearForm();
   return review;
+}
+
+const clearForm = () => {
+  document.querySelector('input[name="reviewer-name"]').value = '';
+  document.querySelector('textarea[name="review"]').value = '';
 }
 
 const formatDate = (seconds = 0) => {
@@ -61,9 +68,9 @@ const formatDate = (seconds = 0) => {
   // or 
   // added from the review form then use the current date
   let date;
-  if(seconds != 0){
+  if (seconds != 0) {
     date = new Date(seconds);
-  }else{
+  } else {
     date = new Date();
   }
   // Month + 1 because month starts from zero!!!
@@ -80,17 +87,54 @@ const addReviewToDB = (review) => {
     reviewsStore.put(review);
     return tx.complete;
   })
-  .then(res => {
-    if(navigator.serviceWorker && window.SyncManager){
-      navigator.serviceWorker.ready
-      .then(sw => {
-        return sw.sync.register('sync-reviews')
-        .then(r => {
-          console.log('sync registered ' + r);
-        })
-      })
-    }
+    .then(res => {
+      if (navigator.serviceWorker && window.SyncManager) {
+        navigator.serviceWorker.ready
+          .then(sw => {
+            return sw.sync.register('sync-reviews')
+              .then(r => {
+                console.log('sync registered ' + r);
+              })
+          })
+      }
+    })
+}
+
+const enableFavorite = () => {
+  const fav = document.querySelector('#fav');
+  fav.addEventListener('click', (e) => {
+    fav.classList.toggle('favorite-animation');
+    fav.classList.toggle('favorite');
+    sendFavoriteRequest(fav.classList.contains('favorite'));
   })
+}
+
+const sendFavoriteRequest = (isFavorite) => {
+  DBHelper.favoriteRestaurant(this.restaurant.id, isFavorite)
+    .then(res => {
+      // update the db
+      console.log(res);
+      const dbPromise = openDatabase();
+      dbPromise.then(db => {
+        const restaurantStore = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
+        return restaurantStore.put(res);
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    })
+    .catch(err => {
+      console.log('error while fav ' + err);
+    })
+}
+
+const makeFavorite = () => {
+  const fav = document.querySelector('#fav');
+  fav.classList.add('favorite-animation');
+  fav.classList.add('favorite');
 }
 
 /**
@@ -100,7 +144,7 @@ const initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
-    } else {      
+    } else {
       self.newMap = L.map('map', {
         center: [restaurant.latlng.lat, restaurant.latlng.lng],
         zoom: 16,
@@ -112,7 +156,7 @@ const initMap = () => {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
           'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox.streets'    
+        id: 'mapbox.streets'
       }).addTo(newMap);
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
@@ -134,14 +178,14 @@ const fetchRestaurantFromURL = (callback) => {
     callback(error, null);
   } else {
     DBHelper.fetchRestaurantById(id)
-    .then(restaurant => {
-      self.restaurant = restaurant;
-      fillRestaurantHTML();
-      callback(null, restaurant)
-    })
-    .catch(err => {
-      console.error(err);
-    });
+      .then(restaurant => {
+        self.restaurant = restaurant;
+        fillRestaurantHTML();
+        callback(null, restaurant)
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 }
 
@@ -161,10 +205,10 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   let imageUrl = DBHelper.imageUrlForRestaurant(restaurant) + '.jpg';
 
   let width = window.outerWidth;
-  
+
   if (width <= 320) {
     imageUrl = imageUrl.replace('large', 'small');
-  } else if(width <= 420) {
+  } else if (width <= 420) {
     imageUrl = imageUrl.replace('large', 'medium');
   }
 
@@ -173,6 +217,11 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
+
+  // check if favorite
+  if(restaurant.is_favorite){
+    makeFavorite();
+  }
 
   // fill operating hours
   if (restaurant.operating_hours) {
@@ -237,13 +286,13 @@ const createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  if(review.date){
+  if (review.date) {
     date.innerHTML = review.date;
-  }else{
+  } else {
     date.innerHTML = formatDate(review.updatedAt);
   }
   li.appendChild(date);
-  
+
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -259,7 +308,7 @@ const createReviewHTML = (review) => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-const fillBreadcrumb = (restaurant=self.restaurant) => {
+const fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;

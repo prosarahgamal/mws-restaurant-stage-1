@@ -152,4 +152,17 @@ class DBHelper {
       .catch(err => reject(err));
     });
   }
+
+  static favoriteRestaurant(id, isFavorite){
+    const url = DBHelper.DATABASE_URL + 'restaurants/' + id + '/?is_favorite=' + isFavorite
+    console.log(url);
+    return new Promise((resolve, reject) => {
+      fetch(url, {
+        method: 'PUT'
+      })
+      .then(res => res.json())
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+    });
+  }
 }
