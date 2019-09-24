@@ -8,9 +8,7 @@ const openDatabase = () => {
     const store = upgradeDb.createObjectStore('restaurants', {
       keyPath: 'id'
     });
-    const reviews = upgradeDb.createObjectStore('reviews', {
-      keyPath: 'id'
-    })
+    const reviews = upgradeDb.createObjectStore('reviews', { keyPath: 'id', autoIncrement:true });
     reviews.createIndex('restaurant_id', 'restaurant_id', { unique: false });
   });
 };
@@ -180,7 +178,10 @@ const addReviewsToDb = (dbPromise, res) => {
       dbPromise.then(db => {
         const tx = db.transaction('reviews', 'readwrite');
         const reviewsStore = tx.objectStore('reviews');
-        networkRes.forEach(o => reviewsStore.put(o));
+        networkRes.forEach(o => {
+          delete o.id;
+          reviewsStore.put(o);
+        });
       })
     })
     .catch(err => {
