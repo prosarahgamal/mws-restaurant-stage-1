@@ -32,14 +32,14 @@
       <h2 class="hide"><a href="#filter">filter options</a></h2>
       <label class="hide">Filter options</label>
       <div class="filter-options" id="filter">
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+        <label role="note" for="neighborhoods">Select Neighborhood</label>
+        <select id="neighborhoods-select" name="neighborhoods" aria-label="Select Neighborhood" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
-        <label class="hide" for="neighborhoods">Neighborhoods</label>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+        <label role="note" for="cuisines">select cuisine</label>
+        <select id="cuisines-select" name="cuisines" aria-label="select cuisine" onchange="updateRestaurants()">
             <option value="all">All Cuisines</option>
         </select>
-        <label class="hide" for="cuisines">cuisines</label>
       </div>
       <h2 class="hide"><a href="#restaurants-list">restaurents list</a></h2>
       <ul id="restaurants-list"></ul>
