@@ -4,7 +4,7 @@ var newMap;
 /**
  * Initialize map as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', (event) => {  
+document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
   enableRatingStars();
   enableReviewSubmit();
@@ -37,7 +37,7 @@ const enableReviewSubmit = () => {
         container.appendChild(title);
       }
       container.appendChild(createReviewHTML(review));
-      
+      addReviewToDB(review);
     }
   });
 };
@@ -68,6 +68,29 @@ const formatDate = (seconds = 0) => {
   }
   // Month + 1 because month starts from zero!!!
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+}
+
+const addReviewToDB = (review) => {
+  review.isSync = false;
+  review.restaurant_id = self.restaurant.id;
+  const dbPromise = openDatabase();
+  dbPromise.then(db => {
+    const tx = db.transaction('reviews', 'readwrite');
+    const reviewsStore = tx.objectStore('reviews');
+    reviewsStore.put(review);
+    return tx.complete;
+  })
+  .then(res => {
+    if(navigator.serviceWorker && window.SyncManager){
+      navigator.serviceWorker.ready
+      .then(sw => {
+        return sw.sync.register('sync-reviews')
+        .then(r => {
+          console.log('sync registered ' + r);
+        })
+      })
+    }
+  })
 }
 
 /**
@@ -268,3 +291,7 @@ const fetchReviews = (id = self.restaurant.id) => {
     })
     .catch(err => err);
 }
+
+const openDatabase = () => {
+  return idb.open('restaurant-reviews');
+};

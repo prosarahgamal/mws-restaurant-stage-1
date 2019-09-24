@@ -8,7 +8,7 @@ const openDatabase = () => {
     const store = upgradeDb.createObjectStore('restaurants', {
       keyPath: 'id'
     });
-    const reviews = upgradeDb.createObjectStore('reviews', { keyPath: 'id', autoIncrement:true });
+    const reviews = upgradeDb.createObjectStore('reviews', { keyPath: 'id', autoIncrement: true });
     reviews.createIndex('restaurant_id', 'restaurant_id', { unique: false });
   });
 };
@@ -187,4 +187,61 @@ const addReviewsToDb = (dbPromise, res) => {
     .catch(err => {
       console.log('error while adding to db ' + err);
     })
+}
+
+self.addEventListener('sync', event => {
+  if (event.tag === 'sync-reviews') {
+    event.waitUntil(sendDataToServer());
+  }
+});
+
+const sendDataToServer = () => {
+  const dbPromise = openDatabase();
+  return dbPromise.then(db => {
+    const reviewsStore = db.transaction('reviews', 'readwrite').objectStore('reviews');
+    return reviewsStore.getAll();
+  })
+  .then(reviews => {
+    reviews.forEach(review => {
+      if(review.hasOwnProperty('isSync') && review.isSync === false){
+        // we don't need isSync anymore
+        delete review.isSync;
+        // for the fetch post request we need to delete date and id properties from review object 
+        // but we still need them to update the object in idb 
+        // so we need a to clone the object
+        const body = Object.assign({}, review);
+        delete body.id;
+        delete body.date;
+
+        // now let's post the object
+        return fetch('http://localhost:1337/reviews/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: JSON.stringify(body)
+        })
+        .then(res => {
+          // update the review in db as it doesn't need to be synced anymore
+          return dbPromise.then(db => {
+            const reviewsStore = db.transaction('reviews', 'readwrite').objectStore('reviews');
+            return reviewsStore.put(review);
+          })
+          .then(res => {
+            console.log('object updated in db');
+          })
+          .catch(err => {
+            console.log('error while updating db ' + err);
+          })
+        })
+        .catch(err => {
+          console.log('error while syncing ' + err);
+        })
+      }
+    });
+  })
+  .catch(err => {
+    console.log('error while getting reviews from db ' + err);
+  })
 }
