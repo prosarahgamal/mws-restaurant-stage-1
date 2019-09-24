@@ -55,7 +55,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 
 #footer {
   background-color: #444;
-  color: #aaa;
+  color: #fff;
   font-size: 1em;
   letter-spacing: 1px;
   padding: 25px;
@@ -210,7 +210,7 @@ nav h1 a {
 }
 
 #restaurants-list li h3 {
-  color: #f18200;
+  color: #844506;
   font-family: Arial,sans-serif;
   font-size: 1.2em;
   font-weight: 200;
@@ -226,7 +226,7 @@ nav h1 a {
 }
 
 #restaurants-list li a {
-  background-color: orange;
+  background-color: #844506;
   color: #fff;
   display: inline-block;
   font-size: 1.5em;
