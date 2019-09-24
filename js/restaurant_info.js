@@ -31,8 +31,12 @@ const enableReviewSubmit = () => {
     if (review) {
       const container = document.querySelector('#reviews-list');
       if (container.childNodes.length === 0) {
-        document.querySelector('#reviews-container > h2').style.display = 'none';
-        document.querySelector('#reviews-container > p').style.display = 'none';
+        try{
+          document.querySelector('#reviews-container > h2').style.display = 'none';
+          document.querySelector('#reviews-container > p').style.display = 'none';
+        }catch(e){
+          console.log(e);
+        }
         const title = document.createElement('h2');
         title.innerHTML = 'Reviews';
         container.appendChild(title);
