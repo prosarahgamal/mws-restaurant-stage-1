@@ -83,6 +83,10 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   left: 0;
 }
 
+.leaflet-container a {
+  color: #044986 !important;
+}
+
 /* ====================== Navigation ====================== */
 nav {
   width: 100%;
@@ -126,13 +130,13 @@ nav h1 a {
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #0275d8;
+    color: #044986;
     text-decoration: none;
 }
 
 /* Add a color on mouse-over */
 #breadcrumb li a:hover {
-    color: #01447e;
+    color: #032747;
     text-decoration: underline;
 }
 
@@ -277,7 +281,7 @@ nav h1 a {
 }
 
 #restaurant-name {
-  color: #f18200;
+  color: #844506;
   font-family: Arial,sans-serif;
   font-size: 2.5em;
   font-weight: 200;
@@ -321,7 +325,7 @@ nav h1 a {
 }
 
 #reviews-container h2 {
-  color: #f58500;
+  color: #844506;
   font-size: 2em;
   font-weight: 300;
   letter-spacing: -1px;
@@ -364,7 +368,7 @@ nav h1 a {
 }
 
 #reviews-list li p:nth-of-type(3){
-  background-color: #f58500;
+  background-color: #844506;
   color: #fff;
   text-transform: uppercase;
   width: fit-content;
@@ -408,11 +412,11 @@ nav h1 a {
 .review-form button{
   padding: 10px;
   background-color: #00000000;
-  border: 1px #f58500 solid;
+  border: 1px #844506 solid;
 }
 
-.review-form button::hover{
-  background-color: #f58500;
+.review-form button:hover{
+  background-color: #844506;
   color: #fff;
 }
 
@@ -429,7 +433,7 @@ nav h1 a {
 }
 
 .stars:hover .star polygon {
-  fill: #ffd055 !important;
+  fill: #844506 !important;
 }
 
 .stars .star polygon {
@@ -441,7 +445,7 @@ nav h1 a {
 }
 
 .stars[data-stars] .star polygon {
-  fill: #ffd055;
+  fill: #844506;
 }
 
 .stars[data-stars="1"] .star:nth-child(1)~.star polygon {
